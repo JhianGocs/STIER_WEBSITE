@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STI Education Reservation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            font-size: large;
+            font-weight: bold;
+            overflow: hidden;
+            background-color: darkblue;
+        }
+        li {
+            float: right;
+        }
+        li a {
+            display: block;
+            color: whitesmoke;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        li a:hover {
+            background-color: darkblue;
+        }
+        .left-content {
+            float: left;
+            color: whitesmoke;
+            padding: 14px 16px;
+        }
+        .logo {
+            float: left;
+            padding: 5px;
+        }
+        .logo img {
+            height: 35px;
+        }
+        .user-email {
+            float: right;
+            color: whitesmoke;
+            padding: 14px 16px;
+            font-weight: bold;
+        }
+        .logout {
+            float: right;
+        }
+        .logout a {
+            color: whitesmoke;
+        }
+        .logout a:hover {
+            text-decoration: underline;
+        }
+        .main {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            text-align: left;
+        }
+        .menu {
+            width: 20%;
+            background-color: whitesmoke;
+        }
+        .menu a {
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center; 
+            padding: 20px;
+            border-top: 1px solid black;
+        }
+
+        .menu box-icon {
+           margin-right: 10px;
+           font-size: 24px;
+           display: inline-flex; 
+        }
+
+        .menu a:hover {
+            letter-spacing: 4px;
+            transition: 0.5s;
+            text-transform: uppercase;
+        }
+        .content {
+            flex: 1px;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 15px;
+            font-size: 17px;
+            font-family: 'Courier New', Courier, monospace;
+            
+        }
+        .tablecontainer {
+            width: 100%;
+        }
+        thead{
+            background-color: grey;
+        }
+        h2{
+            font-style: bold;
+            color: navy;
+            font-family:'Courier New', Courier, monospace
+        }
+    </style>
+</head>
+<body>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="dashboard.js" type="module"></script> 
+
+    <ul>
+        <li class="logo"><img src="logo.png" alt="Logo"></li>
+        <li class="left-content"><b>Dashboard</b></li>
+        <li class="logout"><a href="LoginForm.html"><b>Logout</b></a></li>
+        <li class="user-email"></li> 
+    </ul>
+    
+    <div class="main">
+        <div class="menu">
+            <a href="Dashboard.html"><box-icon type='solid' name='dashboard'></box-icon> Dashboard</a>
+            <a href="Request.html"><box-icon type='solid' name='envelope'></box-icon>Request</a>
+            <a href="Calendar.html"><box-icon name='calendar' type='solid' ></box-icon>Calendar</a>
+            <a href="Notifications.html"><box-icon name='bell' type='solid' ></box-icon>Notifications</a>
+            <a href="Records.html"><box-icon name='history'></box-icon>Records</a>
+        </div>
+        <div class="content">
+            <br>
+            <h2>Request Summary</h2>
+            <div class="tablecontainer">
+                <table id="request-summary-table">
+                    <thead>
+                        <tr>
+                            <th>Request </th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Total Number of Requests</td>
+                            <td id="total-requests">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <h2>Records Summary</h2>
+            <div class="tablecontainer">
+                <table id="records-summary-table">
+                    <thead>
+                        <tr>
+                            <th>Records</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Total Number of Records</td>
+                            <td id="total-records">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <h2>Event Calendar Summary</h2>
+            <div class="tablecontainer">
+                <table id="calendar-summary-table">
+                    <thead>
+                        <tr>
+                            <th> Event Calendar</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Total Number of Events</td>
+                            <td id="total-calendar">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

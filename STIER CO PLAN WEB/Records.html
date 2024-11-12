@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request - STI Education Reservation System</title>
+    
+    <!-- Firebase and Script -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js"></script>
+    <script type="module" src="records.js" defer></script>
+
+    <style>
+        /* Existing CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            font-size: large;
+            font-weight: bold;
+            overflow: hidden;
+            background-color: darkblue;
+        }
+
+        li {
+            float: right;
+        }
+
+        li a {
+            display: block;
+            color: whitesmoke;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: darkblue;
+        }
+
+        .left-content {
+            float: left;
+            color: whitesmoke;
+            padding: 14px 16px;
+        }
+
+        .logo {
+            float: left;
+            padding: 5px;
+        }
+
+        .logo img {
+            height: 35px;
+        }
+
+        .logout {
+            float: right;
+        }
+
+        .logout a {
+            color: whitesmoke;
+        }
+
+        .logout a:hover {
+            text-decoration: underline;
+        }
+
+        .main {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            text-align: left;
+        }
+
+        .menu {
+            width: 20%;
+            background-color: whitesmoke;
+        }
+
+        .menu a {
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            letter-spacing: 2px;
+            display: block;
+            padding: 20px;
+            border-top: 1px solid black;
+        }
+
+        .menu a:hover {
+            letter-spacing: 4px;
+            transition: 0.5s;
+            text-transform: uppercase;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th,td {
+            border: 1px solid gray;
+            padding: 20px;
+        }
+
+        .tablecontainer {
+            width: 100%;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 2px solid #000;
+            width: 400px;
+            padding: 20px;
+            z-index: 1000;
+            cursor: move;
+        }
+
+        .popup-header {
+            cursor: move;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .popup-body {
+            padding: 20px;
+        }
+
+        .close-btn {
+            color: red;
+            cursor: pointer;
+            float: right;
+            font-size: 20px;
+        }
+
+        .popup .details-content {
+            margin-top: 10px;
+        }
+        .check-button{
+            padding: 8px 12px;
+            border: 1px solid black;
+            background-color: blanchedalmond;
+            cursor: pointer;
+            font-size: 17px;
+            font-family:'Courier New', Courier, monospace 
+        }
+        thead{
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li class="logo"><img src="logo.png" alt="Logo"></li>
+        <li class="left-content"><b>Records</b></li>
+        <li class="logout"><a href="LoginForm.html"><b>Logout</b></a></li>
+        <li class="back-button"><a href="Dashboard.html">
+            <img src="Backbtn.png" alt="Return"></a></li>
+    </ul>
+
+    <div class="main">
+        <div class="content">
+            <br>
+            <div class="tablecontainer">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Requestor ID</th>
+                            <th>Title of Event</th>
+                            <th>Event Reservation Status</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic rows populated by Firebase data -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movable Popup Window -->
+    <div class="popup" id="popup">
+        <div class="popup-header" id="popup-header">
+            Reservation Details <span class="close-btn" onclick="closePopup()">&times;</span>
+        </div>
+        <div class="popup-body">
+            <p><strong>Attendees:</strong> <span id="attendees"></span></p>
+            <p><strong>Visitor:</strong> <span id="visitor"></span></p>
+            <p><strong>Room:</strong> <span id="room"></span></p>
+            <p><strong>Floor:</strong> <span id="floor"></span></p>
+            <p><strong>Camera:</strong> <span id="camera"></span></p>
+            <p><strong>Projector:</strong> <span id="projector"></span></p>
+            <p><strong>Sound System:</strong> <span id="soundSystem"></span></p>
+            <p><strong>Tables:</strong> <span id="tables"></span></p>
+            <p><strong>Chairs:</strong> <span id="chairs"></span></p>
+            <p><strong>Time Slot:</strong> <span id="timeSlot"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Make the popup moveable
+        const popup = document.getElementById("popup");
+        const popupHeader = document.getElementById("popup-header");
+        
+        popupHeader.addEventListener("mousedown", function (e) {
+            let offsetX = e.clientX - popup.offsetLeft;
+            let offsetY = e.clientY - popup.offsetTop;
+
+            function moveAt(e) {
+                popup.style.left = e.clientX - offsetX + "px";
+                popup.style.top = e.clientY - offsetY + "px";
+            }
+
+            function stopMoving() {
+                document.removeEventListener("mousemove", moveAt);
+                document.removeEventListener("mouseup", stopMoving);
+            }
+
+            document.addEventListener("mousemove", moveAt);
+            document.addEventListener("mouseup", stopMoving);
+        });
+
+        // Close the popup
+        function closePopup() {
+            popup.style.display = "none";
+        }
+
+        // Open the popup (you can trigger this function when a user clicks on a row in the table)
+        function openPopup() {
+            popup.style.display = "block";
+        }
+    </script>
+</body>
+
+</html>

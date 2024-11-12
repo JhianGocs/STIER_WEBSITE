@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request - STI Education Reservation System</title>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            font-size: large;
+            font-weight: bold;
+            overflow: hidden;
+            background-color: darkblue;
+        }
+
+        li {
+            float: right;
+        }
+
+        li a {
+            display: block;
+            color: whitesmoke;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: darkblue;
+        }
+
+        .left-content {
+            float: left;
+            color: whitesmoke;
+            padding: 14px 16px;
+        }
+
+        .logo {
+            float: left;
+            padding: 5px;
+        }
+
+        .logo img {
+            height: 35px;
+        }
+
+        .logout {
+            float: right;
+        }
+
+        .logout a {
+            color: whitesmoke;
+        }
+
+        .logout a:hover {
+            text-decoration: underline;
+        }
+
+        .main {
+            display: flex;
+            height: 100vh;
+        }
+
+        .menu {
+            width: 20%;
+            background-color: whitesmoke;
+        }
+
+        .menu a {
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            letter-spacing: 2px;
+            display: flex;
+            padding: 20px;
+            align-items: center;
+            border-top: 1px solid black;
+        }
+
+        .menu box-icon {
+            margin-right: 10px;
+            font-size: 24px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .menu a:hover {
+            letter-spacing: 4px;
+            transition: 0.5s;
+            text-transform: uppercase;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .button:hover {
+            background-color: darkblue;
+        }
+
+        .button box-icon {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        .unread {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Popup Modal Style */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li class="logo"><img src="logo.png" alt="Logo"></li>
+        <li class="left-content"><b>Notifications</b></li>
+        <li class="logout"><a href="LoginForm.html"><b>Logout</b></a></li>
+        <li class="back-button"><a href="Dashboard.html">
+            <img src="Backbtn.png" alt="Return"></a></li>
+    </ul>
+
+    <div class="main">
+        <!-- Sidebar to filter between unread and read messages -->
+        <div class="menu">
+            <a href="#" onclick="filterMessages('unread')"><box-icon type='solid' name='envelope'></box-icon>Unread</a>
+            <a href="#" onclick="filterMessages('read')"><box-icon type='solid' name='inbox'></box-icon>Read</a>
+            <a href="#" onclick="filterMessages('all')"><box-icon name='mail-send'></box-icon>All</a>
+        </div>
+
+        <!-- Main content area for messages -->
+        <div class="content">
+            <!-- Flex container for buttons -->
+            <div class="button-container">
+                <button class="button" onclick="markAsRead()"><box-icon type='solid' name='book-reader'></box-icon>Mark as read</button>
+                <button class="button" onclick="deleteNotifications()"><box-icon name='trash'></box-icon>Delete</button>
+                <button class="button" onclick="openModal()"><box-icon name='plus'></box-icon>Create Message</button>
+            </div>
+            <br>
+            <div class="tablecontainer">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Requestor ID</th>
+                            <th>Context</th>
+                            <th>Sent</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="notification-body">
+                        <tr class="unread">
+                            <td><input type="checkbox" class="notification-checkbox" data-id="1"></td>
+                            <td>John Doe</td>
+                            <td>Room Booking Request</td>
+                            <td>2024-09-15</td>
+                            <td>Unread</td>
+                        </tr>
+                        <tr class="read">
+                            <td><input type="checkbox" class="notification-checkbox" data-id="2"></td>
+                            <td>Jane Smith</td>
+                            <td>Event Approval</td>
+                            <td>2024-09-14</td>
+                            <td>Read</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for creating a message -->
+    <div id="createMessageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Create New Message</h2>
+            <div class="form-group">
+                <label for="recipient">Recipient:</label>
+                <input type="text" id="recipient" placeholder="Enter recipient's name">
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" rows="4" placeholder="Enter your message"></textarea>
+            </div>
+            <div class="form-group">
+                <button class="button">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function markAsRead() {
+            const checkboxes = document.querySelectorAll('.notification-checkbox:checked');
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.parentElement.parentElement;
+                row.classList.remove('unread');
+                row.classList.add('read');
+                row.cells[4].textContent = 'Read';
+            });
+        }
+
+        function deleteNotifications() {
+            const checkboxes = document.querySelectorAll('.notification-checkbox:checked');
+            checkboxes.forEach(checkbox => {
+                const row = checkbox.parentElement.parentElement;
+                row.remove();
+            });
+        }
+
+        function filterMessages(filter) {
+            const rows = document.querySelectorAll('#notification-body tr');
+            rows.forEach(row => {
+                const status = row.cells[4].textContent;
+                if (filter === 'all' || status.toLowerCase() === filter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function openModal() {
+            document.getElementById("createMessageModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("createMessageModal").style.display = "none";
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            const modal = document.getElementById("createMessageModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>

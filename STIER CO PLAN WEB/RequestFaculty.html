@@ -1,0 +1,375 @@
+<!DOCTYPE html> 
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>STI Education Reservation System</title>
+            <style>
+                /* Styles */
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                body {
+                    font-family: Arial, sans-serif;
+                }
+                ul {
+                    list-style-type: none;
+                    margin: 0;
+                    padding: 0;
+                    font-size: large;
+                    font-weight: bold;
+                    overflow: hidden;
+                    background-color: darkblue;
+                }
+                li {
+                    float: right;
+                }
+                li a {
+                    display: block;
+                    color: whitesmoke;
+                    padding: 14px 16px;
+                    text-decoration: none;
+                }
+                li a:hover {
+                    background-color: darkblue;
+                }
+                .left-content {
+                    float: left;
+                    color: whitesmoke;
+                    padding: 14px 16px;
+                }
+                .logo {
+                    float: left;
+                    padding: 5px;
+                }
+                .logo img {
+                    height: 35px;
+                }
+                .logout {
+                    float: right;
+                }
+                .logout a:hover {
+                    text-decoration: underline;
+                }
+                .main {
+                    display: flex;
+                    height: 100vh;
+                }
+                .menu {
+                    width: 20%;
+                    background-color: whitesmoke;
+                    padding: 20px;
+                }
+                .menu h3 {
+                    text-align: center;
+                    margin-bottom: 15px;
+                }
+                .menu a {
+                    text-decoration: none;
+                    font-size: 18px;
+                    color: black;
+                    letter-spacing: 2px;
+                    display: block;
+                    padding: 10px;
+                    border-top: 1px solid black;
+                }
+                .menu a:hover {
+                    letter-spacing: 4px;
+                    transition: 0.5s;
+                    text-transform: uppercase;
+                    background-color: #d3d3d3;
+                }
+                .content {
+                    flex: 1;
+                    padding: 20px;
+                    display: none; 
+                }
+                .active {
+                    display: block; 
+                }
+                .form-container {
+                    background-color: #f4f4f4;
+                    padding: 20px;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    margin-top: 20px;
+                }
+                label {
+                    margin-top: 10px;
+                    display: block;
+                }
+                input[type="text"],
+                input[type="date"],
+                select {
+                    width: 100%;
+                    padding: 10px;
+                    margin: 5px 0 20px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                }
+                button {
+                    width: 45%;
+                    padding: 10px;
+                    border-radius: 5px;
+                    background-color: #28a745;
+                    border: none;
+                    color: white;
+                    cursor: pointer;
+                }
+                button:hover {
+                    background-color: #218838;
+                }
+                .response-message {
+                    margin-top: 20px;
+                    text-align: center;
+                    color: #28a745;
+                }
+                h5{
+                    color: grey;
+                }
+                .available-times {
+                    margin-top: 20px;
+                }
+                .detail-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                margin-bottom: 10px;
+                }
+                .calendar {
+                margin-top: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .calendar-header {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                max-width: 500px;
+                margin-bottom: 10px;
+            }
+            .calendar-header h3 {
+                font-size: 20px;
+                margin: 0 70px; 
+            }
+            .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr); /* 7 columns for the days of the week */
+            gap: 10px;
+            max-width: 500px;
+            }
+
+            .day {
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #e7e7e7; /* Light grey for day headers */
+            font-weight: bold;
+            }
+            .day.available {
+                background-color: #28a745;
+                color: white;
+                cursor: pointer;
+            }
+            .day.unavailable {
+                background-color: #f4f4f4;
+                color: #ccc;
+            }
+        
+
+            </style>   
+        </head>
+        <body>
+            <ul>
+                <li class="logo"><img src="logo.png" alt="Logo"></li>
+                <li class="left-content"><b>Request</b></li>
+                <li class="logout"><a href="LoginForm.html"><b>Logout</b></a></li>
+                <li class="back-button"><a href="DashboardFaculty.html"> <img src="Backbtn.png" alt="Return"></a></li>
+            </ul> 
+
+            <div class="main">
+                <div class="menu">
+                    <h3>Appointment Progress</h3>
+                    <a href="#event-info" onclick="showSection('event-info')">Event Information</a>
+                    <a href="#equipments" onclick="showSection('equipments')">Equipments Needed Selection</a>
+                    <a href="#date-time" onclick="showSection('date-time')">Date and Time Selection</a>
+                    <a href="#details" onclick="showSection('details')">Details</a>
+                </div>
+                
+                <div class="content active" id="event-info">
+                    <h1>Event Information</h1>
+                    <div class="form-container">
+                        <form id="requestForm">
+                            <h3><label for="name">Name of Coordinator:</label></h3>
+                            <input type="text" id="name" name="name" required>
+
+                            <h3><label for="eventTitle">Title of the Event:</label></h3>
+                            <input type="text" id="eventTitle" name="eventTitle" required>
+
+                            <h3><label for="visitors">Include Visitors (optional):</label></h3>
+                            <select name="options" id="options" required>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                                <option value="tba">TBA</option>
+                            </select>
+
+                            <h2>Need Equipments?</h2>
+                            <br>
+                            <button type="button" onclick="handleEquipmentResponse('yes')">Yes</button>
+                            
+                            <button type="button" onclick="handleEquipmentResponse('no')">No</button>
+                        </form>
+                        <br>
+                        <h5>Note: if you click No, you will proceed to Date and Time selection.</h5>
+                    </div>
+                </div>
+
+                <div class="content" id="equipments">
+                    <h1>Equipments</h1>
+                    <div class="form-container">
+                        <p><b>Please select the necessary equipment and Quantity For Your Event.</b></p>
+                        <br>
+                        <h3><label for="chairs">Chairs</label></h3>
+                        <select name="chair" id="chair"></select>
+                        <h3><label for="tables">Tables</label></h3>
+                        <select name="table" id="table"></select>
+                        <h3><label for="soundsystems">Sound System</label></h3>
+                        <select name="soundsystem" id="soundsystem"></select>
+                        <h3><label for="cameras">Cameras</label></h3>
+                        <select name ="camera" id="camera"></select>
+                        <h3><label for="projectors">Projectors</label></h3>
+                        <select name ="projector" id="projector"></select>
+                    <button type="button" onclick="showSection('event-info')">Back</button>
+                    <button type="button" onclick="nextSection('date-time')">Proceed</button>
+                    </div>
+                </div>
+
+            <div class="content" id="date-time">
+        <h1>Date and Time</h1>
+        <div class="form-container">
+            <p>Select the date and time for your reservation.</p>
+            <p><b>Select the Floor and Room you want to Use</b></p>
+
+            <!-- Existing Floor and Room selectors -->
+            <h3><label for="floor">Floor</label></h3>
+            <select id="floor" onchange="updateRooms()">
+                <option value="">Select Floor</option>
+                <option value="Ground">Ground Floor</option>
+                <option value="Second">Second Floor</option>
+                <option value="Third">Third Floor</option>
+                <option value="Fourth">Fourth Floor</option>
+                <option value="Fifth">Fifth Floor</option>
+                <option value="Sixth">Sixth Floor</option>
+            </select>
+
+            <h3><label for="room">Room</label></h3>
+            <select name="room" id="room" onchange="updateAvailableTimes()">
+                <!-- Options -->
+            </select>
+
+            <!-- Date and Calendar Grid -->
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button onclick="changeMonth(-1)">Previous</button>
+                    <h3 id="calendar-month"></h3>
+                    <button onclick="changeMonth(1)">Next</button>
+                </div>
+                <div id="calendar-grid" class="calendar-grid"></div>
+            </div>
+
+            <!-- Div for Available Times -->
+            <div class="available-times" id="availableTimes">
+                <h3>Available Times:</h3>
+                <ul id="available-times-list">
+                    <!-- Available times will be populated here -->
+                </ul>
+            </div>
+
+            <br>
+            <br>
+            <button type="button" onclick="showSection('equipments')">Back</button>
+            <button type="button" onclick="nextSection('details')">Next</button>
+        </div>
+    </div>
+
+                <div class="content" id="details">
+                    <h1>Details</h1>
+                    <div class="form-container">
+                        <br>
+                        <div class="detail-item">
+                        <h3>Title of Event:</h3>
+                        <span id="detail-event-title"></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Name of Coordinator:</h3>
+                        <span id="detail-coordinator-name"></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Include Visitors:</h3>
+                        <span id="detail-include-visitors"></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Floor:</h3>
+                        <span id="detail-floor"></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Room:</h3>
+                        <span></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Selected Date:</h3>
+                        <span></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Selected Time:</h3>
+                        <span></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h1>Equipments</h1>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Chairs:</h3>
+                        <span id="detail-chairs"></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Tables:</h3>
+                        <span id="detail-table"></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Camera:</h3>
+                        <span id="detail-camera"></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>Projectors:</h3>
+                        <span id="detail-projector"></span>
+                        </div>
+                        <br>
+                        <div class="detail-item">
+                        <h3>SoundSystem:</h3>
+                        <span id="detail-soundsystem"></span>
+                        </div>
+                        <br>
+                        <button type="button" onclick="showSection('event-info')">Proceed</button>
+                    </div>
+                </div>
+            </div>
+            
+            <script src="requestfaculty.js"></script>
+        </body>
+        </html>

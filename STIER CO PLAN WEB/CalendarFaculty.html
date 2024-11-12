@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar - STI Education Reservation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            font-size: large;
+            font-weight: bold;
+            overflow: hidden;
+            background-color: darkblue;
+        }
+        li {
+            float: right;
+        }
+        li a {
+            display: block;
+            color: whitesmoke;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        li a:hover {
+            background-color: darkblue;
+        }
+        .left-content {
+            float: left;
+            color: whitesmoke;
+            padding: 14px 16px;
+        }
+        .logo {
+            float: left;
+            padding: 5px;
+        }
+        .logo img {
+            height: 35px;
+        }
+        .logout {
+            float: right;
+        }
+        .logout a {
+            color: whitesmoke;
+        }
+        .logout a:hover {
+            text-decoration: underline;
+        }
+        .main {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            text-align: left;
+        }
+        .menu {
+            width: 20%;
+            background-color: whitesmoke;
+        }
+        .menu a {
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            letter-spacing: 2px;
+            display: block;
+            padding: 20px;
+            border-top: 1px solid black;
+        }
+        .menu a:hover {
+            letter-spacing: 4px;
+            transition: 0.5s;
+            text-transform: uppercase;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+        #calendar {
+            width: 100%;
+            height: auto;
+        }
+        .calendar {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-bottom: 1px solid #ddd;
+        }
+        .calendar-days div {
+            padding: 10px;
+            border-right: 1px solid #ddd;
+            text-align: center;
+        }
+        .calendar-days div:last-child {
+            border-right: none;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-auto-rows: 100px;
+        }
+        .calendar-grid div {
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            position: relative;
+        }
+        .calendar-grid div:last-child {
+            border-right: none;
+        }
+        .event {
+            background-color: #007bff;
+            color: white;
+            border-radius: 3px;
+            padding: 2px 5px;
+            font-size: 12px;
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li class="logo"><img src="logo.png" alt="Logo"></li>
+        <li class="left-content"><b>Calendar</b></li>
+        <li class="logout"><a href="LoginForm.html"><b>Logout</b></a></li>
+        <li class="back-button"><a href="DashboardFaculty.html">
+            <img src="Backbtn.png" alt="Return"></a></li>
+    </ul>
+    <div class="main">
+        <div class="content">
+            <div id="calendar" class="calendar">
+                <div class="calendar-header">
+                    <button onclick="prevMonth()">&#9664;</button>
+                    <span id="calendar-month"></span>
+                    <button onclick="nextMonth()">&#9654;</button>
+                </div>
+                <div class="calendar-days">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+                <div id="calendar-grid" class="calendar-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const calendarGrid = document.getElementById('calendar-grid');
+        const calendarMonth = document.getElementById('calendar-month');
+        const events = [ ];
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function renderCalendar() {
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startDay = firstDay.getDay();
+
+            calendarMonth.textContent = firstDay.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            calendarGrid.innerHTML = '';
+            for (let i = 0; i < startDay; i++) {
+                calendarGrid.innerHTML += '<div></div>';
+            }
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const dateString = date.toISOString().split('T')[0];
+                const eventList = events.filter(event => event.date === dateString).map(event => `<div class="event">${event.title}</div>`).join('');
+                calendarGrid.innerHTML += `<div>${day}${eventList}</div>`;
+            }
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        renderCalendar();
+    </script>
+</body>
+
+</html>
